@@ -1,13 +1,14 @@
 
 # Summary
-## **Business Driver**
+
+## Business Driver
 
 In Stock Plan Services, we support a large volume of questions that depend on *plan documents, policies, and operational knowledge*. While the information is accurate, it is fragmented and hard to search, which makes it time-consuming to interpret — especially as volume increases. Over time, **efficiency and consistency have become real challenges**.
 
 A generic chatbot or an LLM answering from its own knowledge will not work. **Accuracy and explainability are non-negotiable** in the **regulated** environment. Using RAG allows us to generate answers that are grounded strictly in approved content, which is critical from a **regulatory and compliance** standpoint.
 ***
 
-## **Scope**
+## Scope
 
 - External participant and Internal users asking plan and policy related questions
 - Need for consistent, explainable answers grounded in approved content
@@ -16,10 +17,10 @@ A generic chatbot or an LLM answering from its own knowledge will not work. **Ac
 
 # Conceptual View
 
-## **Use case view**
-![[use case]]
+## Use case view
+![[docs/diagrams/use case.svg]]
 ***
-## **Architecture Overview**
+## Architecture Overview
 
 Key components:
 - RAG Orchestrator
@@ -27,14 +28,26 @@ Key components:
 - Vector Search
 - LLM Inference
 - Monitoring & Governance Layer
+  
 ### Target State
 ![[rag architecture|800%x400]]
+
 ***
 ### Sequence Diagrams
+
+#### Ingestion flow
+![[docs/diagrams/ingestion.svg]]
+
+#### Retrieval flow
+![[docs/diagrams/retrieval.svg]]
+
+#### Auth/z flow
+![[docs/diagrams/auth.svg]]
+
 ***
 # Critical Decisions
 
-## **Significant Architecture Decisions**
+## Significant Architecture Decisions
 
 
 | ==Area== | ==Decision== | ==Rationale== | ==Impact== |
@@ -47,7 +60,7 @@ Key components:
 | Guardrails | 
 | IAM Controls|
 ***
-## **Significant Assumptions Made**
+## Significant Assumptions Made
 
 | ==Area== | ==Assumption== |
 | ---- | -------- |
@@ -55,7 +68,7 @@ Key components:
 | Data and Document  | Documents arrive in **S3** and are the primary source of truth  |
 |  Retrieval  | Business is ok with **eventual consistency**: new docs may take seconds/minutes to appear in retrieval|
 ***
-## **Alternatives Considered**
+## Alternatives Considered
 
 ### 1. Keyword Search + Manual Interpretation
 Pros: Simple, low risk
@@ -66,7 +79,7 @@ Pros: Fluent responses
 Cons: Hallucination risk, no explainability
 ***
 # Non Functional Requirement
-## **NFRs**
+## NFRs
 - if the retrieval confidence / threshold is low ask the customer to call
 - Security and Compliance are important
 - Re-runs of ingestion/indexing should not corrupt the index; support rollback to previous index version
@@ -78,7 +91,7 @@ Cons: Hallucination risk, no explainability
 ***
 # Security & IAM View
 
-![[security view.drawio.png]]
+![[docs/diagrams/security view2.svg]]
 ***
 # Cost Drivers
 ***
@@ -102,7 +115,7 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 7. Response validated and returned with citations
 
 # Data View
-## **Data Models**
+## Data Models
 ### OpenSearch Record
 |doc_id|chunk_id|source|page|text (preview)|vec (preview)|
 |---|--:|---|--:|---|---|
