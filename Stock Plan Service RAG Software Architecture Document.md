@@ -18,7 +18,9 @@ A generic chatbot or an LLM answering from its own knowledge will not work. **Ac
 # Conceptual View
 
 ## Use case view
-![[docs/diagrams/use case.svg]]
+
+![Use case](docs/diagrams/use%20case.svg)
+
 ***
 ## Architecture Overview
 
@@ -36,13 +38,13 @@ Key components:
 ### Sequence Diagrams
 
 #### Ingestion flow
-![[docs/diagrams/ingestion.svg]]
+![Ingestion flow](docs/diagrams/ingestion.svg)
 
 #### Retrieval flow
-![[docs/diagrams/retrieval.svg]]
+![Retrieval flow](docs/diagrams/retrieval.svg)
 
 #### Auth/z flow
-![[docs/diagrams/auth.svg]]
+![Auth flow](docs/diagrams/auth.svg)
 
 ***
 # Critical Decisions
@@ -91,7 +93,7 @@ Cons: Hallucination risk, no explainability
 ***
 # Security & IAM View
 
-![[docs/diagrams/security view2.svg]]
+![Security & IAM](docs/diagrams/security%20view2.svg)
 ***
 # Cost Drivers
 ***
