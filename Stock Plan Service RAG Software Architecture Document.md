@@ -8,6 +8,12 @@ In Stock Plan Services, we support a large volume of questions that depend on *p
 A generic chatbot or an LLM answering from its own knowledge will not work. **Accuracy and explainability are non-negotiable** in the **regulated** environment. Using RAG allows us to generate answers that are grounded strictly in approved content, which is critical from a **regulatory and compliance** standpoint.
 ***
 
+Buiness Outcomes Measured:
+- Throughput
+- Saved Time
+- Risk Mitigation
+- Financial Impact
+
 ## Scope
 
 - External participant and Internal users asking plan and policy related questions
@@ -30,7 +36,9 @@ Key components:
 - Vector Search
 - LLM Inference
 - Monitoring & Governance Layer
-  
+
+![Use case](docs/diagrams/rag%20architecture.svg)
+
 ### Target State
 ![[rag architecture|800%x400]]
 
@@ -52,7 +60,7 @@ Key components:
 ## Significant Architecture Decisions
 
 
-| ==Area== | ==Decision== | ==Rationale== | ==Impact== |
+| Area | Decision | Rationale | Impact |
 | ---- | -------- | --------- | ------ |
 |  Bedrock knowledge base    | Despite its advantages, we evaluated and ultimately opted against AWS Knowledge Base for our production scenario.<br><br>|   The primary factor was **cost-efficiency.** AWS Knowledge Base relies heavily on OpenSearch instances, which rapidly become expensive at scale.|Our existing custom implementation achieves similar functionality more economically by:- Manually chunking documents using customizable splitters.- Storing embeddings directly into optimized OpenSearch indices.- Executing targeted semantic searches without incurring additional managed service costs.
 | Bedrock Data Automation | We decided not to use BDA |  Data content is text ( no images or videos), and we need to control extraction (chunking) | Define the chunking and the overlays
@@ -64,7 +72,7 @@ Key components:
 ***
 ## Significant Assumptions Made
 
-| ==Area== | ==Assumption== |
+| Area | Assumption |
 | ---- | -------- |
 |  Use case   |  The source content is to be allowed for LLM inference(policy/compliance approval for Bedrock usage)  |
 | Data and Document  | Documents arrive in **S3** and are the primary source of truth  |
@@ -94,9 +102,9 @@ Cons: Hallucination risk, no explainability
 # Security & IAM View
 
 ![Security & IAM](docs/diagrams/security%20view2.svg)
+
 ***
-# Cost Drivers
-***
+
 # Deployment View
 
 The system is deployed in a **multi-AZ, multi-region architecture**. The primary region us-west1 operates **active/active across availability zones**, while a secondary region us-east1 is provisioned as a **hot standby** with no live traffic. **DNS-based failover** is used to promote the standby region during regional outages.
@@ -105,16 +113,7 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 2. **OpenSearch indices (including vector indices) are replicated cross-region** from the active domain to the standby domain, while **S3 uses cross-region replication** for source documents. **DNS failover** is used to shift traffic to the standby region during a regional outage.
 3. **Active-hot across regions** is achieved via **Route53 failover routing**; Region B is fully provisioned but **takes traffic only during failover**.
 
-
-## Request Flow (Sequence)
-
-1. User submits query
-2. RAG Orchestrator validates request and entitlements
-3. Query embedded and sent to vector search
-4. Top-K content retrieved (with thresholds)
-5. Prompt assembled with grounding rules
-6. LLM generates response
-7. Response validated and returned with citations
+![Deployment](docs/diagrams/deployment.svg)
 
 # Data View
 ## Data Models
@@ -162,6 +161,7 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 }
 ```
 # Controls & Monitoring
+![Monitoring](docs/diagrams/monitoring.svg)
 
 ### Preventive Controls
 - Approved document ingestion only
@@ -177,17 +177,12 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 - Kill switches
 - Rollback of prompts and indexes
 
-## Metrics
-- Throughput
-- Saved Time
-- Risk Mitigation
-- Financial Impact
 
 
 ## Lessons Learned
 
 - Retrieval quality mattered more than model choice
 - Chunking strategy took multiple iterations
-- Monitoring had to be designed upfront
+- Having a confidence threshold that business is comfortable with is important
 - Refusal behavior was essential to trust
 
