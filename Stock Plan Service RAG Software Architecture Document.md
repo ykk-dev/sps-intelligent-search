@@ -1,6 +1,32 @@
+# Stock Plan Services Search Architecture Document
 
-## Stock Plan Services Search Architecture Document
+- [[#Summary|Summary]]
+	- [[#Summary#Business Driver|Business Driver]]
+	- [[#Summary#Scope|Scope]]
+- [[#Conceptual View|Conceptual View]]
+	- [[#Conceptual View#Use case view|Use case view]]
+	- [[#Conceptual View#Architecture Overview|Architecture Overview]]
+		- [[#Architecture Overview#Target State|Target State]]
+		- [[#Architecture Overview#Sequence Diagrams|Sequence Diagrams]]
+- [[#Critical Decisions|Critical Decisions]]
+	- [[#Critical Decisions#Significant Architecture Decisions|Significant Architecture Decisions]]
+	- [[#Critical Decisions#Significant Assumptions Made|Significant Assumptions Made]]
+	- [[#Critical Decisions#Alternatives Considered|Alternatives Considered]]
+- [[#Non Functional Requirement|Non Functional Requirement]]
+	- [[#Non Functional Requirement#NFRs|NFRs]]
+- [[#Security & IAM View|Security & IAM View]]
+- [[#Deployment View|Deployment View]]
+- [[#Data View|Data View]]
+	- [[#Data View#Data Models|Data Models]]
+- [[#Controls & Monitoring|Controls & Monitoring]]
+	- [[#Controls & Monitoring#Audit & Logging|Audit & Logging]]
+		- [[#Audit & Logging#Retrieval and Generation:|Retrieval and Generation:]]
+		- [[#Audit & Logging#Ingestion|Ingestion]]
+	- [[#Controls & Monitoring#Controls|Controls]]
+- [[#Lessons Learned|Lessons Learned]]
 
+
+## Summary
 ### Business Driver
 
 In Stock Plan Services, we support a large volume of questions from external and internal stakeholders that depend on *plan documents, policies, and operational knowledge*. While the information is accurate, it is fragmented and hard to search, which makes it time-consuming to interpret — especially as volume increases. Over time, **efficiency and consistency have become real challenges**.
@@ -75,11 +101,11 @@ Key components:
 ***
 ### Alternatives Considered
 
-#### 1. Keyword Search + Manual Interpretation
+##### 1. Keyword Search + Manual Interpretation
 Pros: Simple, low risk
 Cons: Slow, inconsistent, not scalable
 
-#### 2. Fine-tuned LLM without Retrieval
+##### 2. Fine-tuned LLM without Retrieval
 Pros: Fluent responses
 Cons: Hallucination risk, no explainability
 ***
@@ -106,14 +132,14 @@ The system is deployed in a multi-AZ, multi-region architecture. The primary reg
 
 ## Data View
 ### Data Models
-#### OpenSearch Record
+##### OpenSearch Record
 |doc_id|chunk_id|source|page|text (preview)|vec (preview)|
 |---|--:|---|--:|---|---|
 |planDoc-2026-001|12|2026_Plan_Document.pdf|34|Vesting occurs on the anniversary…|[12, -7, 127, 4, …]|
 |planDoc-2026-001|13|2026_Plan_Document.pdf|35|If employment terminates for cause…|[-3, 44, 9, -128, …]|
 |policy-Ticker-014|5|Policy.docx|2|Tax withholding is calculated based on…|[66, -12, 0, 8, …]|
 
-#### Search response
+##### Search response
 
 ```
 {
@@ -135,7 +161,7 @@ The system is deployed in a multi-AZ, multi-region architecture. The primary reg
 }
 ```
 
-#### kNN Query
+##### kNN Query
 ```{
   "size": 3,
   "query": {
@@ -152,10 +178,10 @@ The system is deployed in a multi-AZ, multi-region architecture. The primary reg
 ## Controls & Monitoring
 ![Monitoring](docs/images/monitoring.svg)
 
-#### Audit & Logging
+### Audit & Logging
 For audit purposes (explainability and lineage) we will store following fields in s3.
 
-##### Retrieval and Generation:
+#### Retrieval and Generation
 ```
 {
   "request_id": "uuid",
@@ -179,7 +205,7 @@ For audit purposes (explainability and lineage) we will store following fields i
 
 ```
 
-##### Ingestion
+#### Ingestion
 ```
 {
   "ingestion_id": "uuid",
@@ -196,13 +222,14 @@ For audit purposes (explainability and lineage) we will store following fields i
   "status": "success"
 }
 ```
-#### Controls
+
+### Controls
 - Approved document ingestion only
 - Retrieval confidence thresholds
 - Prompt-level grounding and refusal rules
 - Retrieval hit rate monitoring
 
-### Lessons Learned
+## Lessons Learned
 
 - Retrieval quality mattered more than model choice
 - Chunking strategy took multiple iterations
