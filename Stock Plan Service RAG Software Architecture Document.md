@@ -8,12 +8,6 @@ In Stock Plan Services, we support a large volume of questions that depend on *p
 A generic chatbot or an LLM answering from its own knowledge will not work. **Accuracy and explainability are non-negotiable** in the **regulated** environment. Using RAG allows us to generate answers that are grounded strictly in approved content, which is critical from a **regulatory and compliance** standpoint.
 ***
 
-Buiness Outcomes Measured:
-- Throughput
-- Saved Time
-- Risk Mitigation
-- Financial Impact
-
 ## Scope
 
 - External participant and Internal users asking plan and policy related questions
@@ -32,15 +26,14 @@ Buiness Outcomes Measured:
 
 Key components:
 - RAG Orchestrator
-- Document Ingestion & Indexing Pipeline
+- Ingestion Orchestrator
+- Embedding
 - Vector Search
 - LLM Inference
 - Monitoring & Governance Layer
-
-![Use case](docs/diagrams/rag%20architecture.svg)
-
+  
 ### Target State
-![[rag architecture|800%x400]]
+![Target state](docs/diagrams/rag%20architecture.svg)
 
 ***
 ### Sequence Diagrams
@@ -66,9 +59,9 @@ Key components:
 | Bedrock Data Automation | We decided not to use BDA |  Data content is text ( no images or videos), and we need to control extraction (chunking) | Define the chunking and the overlays
 | Vector Type | Use Vector type of `byte` | `float` vectors are expensive (memory and latency)| Titan embedding only supports Float32 so we had to do quantization to int8.<br><br>~3x less memory, ~1% recall loss
 | Chunking Strategy | Fixed length with Overlay|
-| Threshold | 0.8 | Certain amount of accuracy needed | lower threshold will be answered to reach out
-| Guardrails | 
-| IAM Controls|
+| Threshold | 0.8 | Certain amount of accuracy needed | Answers with lower threshold will be asked to call|
+| Guardrails | Use GuardRails and custom regex for PII protection and advice constraints | Custom regex rules combined with AWS Guardrails works for this solution|
+
 ***
 ## Significant Assumptions Made
 
@@ -91,12 +84,7 @@ Cons: Hallucination risk, no explainability
 # Non Functional Requirement
 ## NFRs
 - if the retrieval confidence / threshold is low ask the customer to call
-- Security and Compliance are important
 - Re-runs of ingestion/indexing should not corrupt the index; support rollback to previous index version
-- Responses must be **fully grounded** in retrieved content; no unsupported claims.
-- Every answer must include citations (doc + section + version).
-- Human review path for flagged topics, low-confidence responses, or high-risk categories.
-- From a governance perspective- Auditability, bias and fairness and regulations
 - The solution should plan for continuous validation, monitoring and governance ( Auditability and Regulations)
 ***
 # Security & IAM View
@@ -113,7 +101,7 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 2. **OpenSearch indices (including vector indices) are replicated cross-region** from the active domain to the standby domain, while **S3 uses cross-region replication** for source documents. **DNS failover** is used to shift traffic to the standby region during a regional outage.
 3. **Active-hot across regions** is achieved via **Route53 failover routing**; Region B is fully provisioned but **takes traffic only during failover**.
 
-![Deployment](docs/diagrams/deployment.svg)
+
 
 # Data View
 ## Data Models
@@ -178,11 +166,10 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 - Rollback of prompts and indexes
 
 
-
 ## Lessons Learned
 
 - Retrieval quality mattered more than model choice
 - Chunking strategy took multiple iterations
-- Having a confidence threshold that business is comfortable with is important
+- Monitoring has to be designed upfront
 - Refusal behavior was essential to trust
 
