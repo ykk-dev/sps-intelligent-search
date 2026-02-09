@@ -101,7 +101,7 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 2. **OpenSearch indices (including vector indices) are replicated cross-region** from the active domain to the standby domain, while **S3 uses cross-region replication** for source documents. **DNS failover** is used to shift traffic to the standby region during a regional outage.
 3. **Active-hot across regions** is achieved via **Route53 failover routing**; Region B is fully provisioned but **takes traffic only during failover**.
 
-
+![deployment](docs/diagrams/deployment.svg)
 
 # Data View
 ## Data Models
