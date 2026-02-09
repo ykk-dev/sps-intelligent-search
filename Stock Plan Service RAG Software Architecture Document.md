@@ -1,29 +1,40 @@
 # Stock Plan Services Search Architecture Document
 
-- [[#Summary|Summary]]
-	- [[#Summary#Business Driver|Business Driver]]
-	- [[#Summary#Scope|Scope]]
-- [[#Conceptual View|Conceptual View]]
-	- [[#Conceptual View#Use case view|Use case view]]
-	- [[#Conceptual View#Architecture Overview|Architecture Overview]]
-		- [[#Architecture Overview#Target State|Target State]]
-		- [[#Architecture Overview#Sequence Diagrams|Sequence Diagrams]]
-- [[#Critical Decisions|Critical Decisions]]
-	- [[#Critical Decisions#Significant Architecture Decisions|Significant Architecture Decisions]]
-	- [[#Critical Decisions#Significant Assumptions Made|Significant Assumptions Made]]
-	- [[#Critical Decisions#Alternatives Considered|Alternatives Considered]]
-- [[#Non Functional Requirement|Non Functional Requirement]]
-	- [[#Non Functional Requirement#NFRs|NFRs]]
-- [[#Security & IAM View|Security & IAM View]]
-- [[#Deployment View|Deployment View]]
-- [[#Data View|Data View]]
-	- [[#Data View#Data Models|Data Models]]
-- [[#Controls & Monitoring|Controls & Monitoring]]
-	- [[#Controls & Monitoring#Audit & Logging|Audit & Logging]]
-		- [[#Audit & Logging#Retrieval and Generation:|Retrieval and Generation:]]
-		- [[#Audit & Logging#Ingestion|Ingestion]]
-	- [[#Controls & Monitoring#Controls|Controls]]
-- [[#Lessons Learned|Lessons Learned]]
+
+- [Stock Plan Services Search Architecture Document](#stock-plan-services-search-architecture-document)
+  - [Summary](#summary)
+    - [Business Driver](#business-driver)
+    - [Scope](#scope)
+  - [Conceptual View](#conceptual-view)
+    - [Use case view](#use-case-view)
+    - [Architecture Overview](#architecture-overview)
+      - [Target State](#target-state)
+      - [Sequence Diagrams](#sequence-diagrams)
+        - [Ingestion flow](#ingestion-flow)
+        - [Retrieval flow](#retrieval-flow)
+        - [Auth/z flow](#authz-flow)
+  - [Critical Decisions](#critical-decisions)
+    - [Significant Architecture Decisions](#significant-architecture-decisions)
+    - [Significant Assumptions Made](#significant-assumptions-made)
+    - [Alternatives Considered](#alternatives-considered)
+        - [1. Keyword Search + Manual Interpretation](#1-keyword-search--manual-interpretation)
+        - [2. Fine-tuned LLM without Retrieval](#2-fine-tuned-llm-without-retrieval)
+  - [Non Functional Requirement](#non-functional-requirement)
+    - [NFRs](#nfrs)
+  - [Security \& IAM View](#security--iam-view)
+  - [Deployment View](#deployment-view)
+  - [Data View](#data-view)
+    - [Data Models](#data-models)
+        - [OpenSearch Record](#opensearch-record)
+        - [Search response](#search-response)
+        - [kNN Query](#knn-query)
+  - [Controls \& Monitoring](#controls--monitoring)
+    - [Audit \& Logging](#audit--logging)
+      - [Retrieval and Generation](#retrieval-and-generation)
+      - [Ingestion](#ingestion)
+    - [Controls](#controls)
+  - [Lessons Learned](#lessons-learned)
+
 
 
 ## Summary
