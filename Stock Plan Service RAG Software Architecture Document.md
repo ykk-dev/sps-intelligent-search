@@ -151,20 +151,11 @@ The system is deployed in a **multi-AZ, multi-region architecture**. The primary
 # Controls & Monitoring
 ![Monitoring](docs/diagrams/monitoring.svg)
 
-### Preventive Controls
+### Controls
 - Approved document ingestion only
 - Retrieval confidence thresholds
 - Prompt-level grounding and refusal rules
-
-### Detective Controls
 - Retrieval hit rate monitoring
-- No-answer / escalation rate
-- User feedback loops
-
-### Corrective Controls
-- Kill switches
-- Rollback of prompts and indexes
-
 
 ## Lessons Learned
 
