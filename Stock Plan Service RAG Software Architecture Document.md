@@ -26,6 +26,7 @@
   - [Data View](#data-view)
     - [Data Models](#data-models)
         - [OpenSearch Record](#opensearch-record)
+        - [content metadata](#content-metadata)
         - [Search response](#search-response)
         - [kNN Query](#knn-query)
   - [Controls \& Monitoring](#controls--monitoring)
@@ -150,6 +151,23 @@ The system is deployed in a multi-AZ, multi-region architecture. The primary reg
 |planDoc-2026-001|13|2026_Plan_Document.pdf|35|If employment terminates for cause…|[-3, 44, 9, -128, …]|
 |policy-Ticker-014|5|Policy.docx|2|Tax withholding is calculated based on…|[66, -12, 0, 8, …]|
 
+##### content metadata
+```
+{doc_id, (ID) 
+doc_version, (version)
+source_type, (pdf, confluence)
+source_uri, (S3 URI or Confluence URL)
+title,
+section_path, (e.g., “Tax > Withholding > RSU”)
+chunk_id,
+chunk_index,
+chunk_text,
+content_hash, (change detection)
+access_tags, (plan_id, region, internal_only, etc.)
+effective_date,
+embedding_model_id, (amazon.titan-embed-text-v2:0)
+ingested_at}
+```
 ##### Search response
 
 ```
